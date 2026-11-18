@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="tr" class="scroll-smooth dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mehmet Sabih Ok | Yazılım Geliştirici & Bilgisayar Mühendisi</title>
+  <meta name="description" content="Mehmet Sabih Ok - Kurumsal .NET Mimarileri, Veri Otomasyonu, Teknik Blog ve İnteraktif Web Uygulamaları." />
+  
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            slate: {
+              950: '#090E1A',
+            },
+            brand: {
+              400: '#38BDF8',
+              500: '#0EA5E9',
+              600: '#0284C7',
+              accent: '#10B981'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Özel kaydırma çubuğu ve ince animasyonlar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0F172A;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #0EA5E9;
+    }
+    .glass-card {
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .terminal-cursor {
+      display: inline-block;
+      width: 8px;
+      height: 1.1em;
+      background-color: #10B981;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .grid-bg {
+      background-size: 32px 32px;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 font-sans antialiased transition-colors duration-300 grid-bg selection:bg-brand-500 selection:text-white">
+
+  <!-- Bildirim Toast Kutusu (alert() yerine kullanılır) -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Üst Navigasyon (Navbar) -->
+  <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 dark:border-slate-800/80 bg-white/80 dark:bg-slate-950/80 glass-card">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <!-- Marka Logosu -->
+        <a href="#" class="flex items-center gap-2.5 group">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-emerald-500 flex items-center justify-center text-white font-mono font-bold text-sm shadow-lg shadow-brand-500/20 group-hover:scale-105 transition-transform">
+            &lt;/&gt;
+          </div>
+          <div class="flex flex-col">
+            <span class="font-bold text-base tracking-tight text-slate-900 dark:text-white leading-none">msabihok<span class="text-brand-500">.dev</span></span>
+            <span class="text-[11px] font-mono text-slate-500 dark:text-slate-400 mt-0.5">Mehmet Sabih Ok</span>
+          </div>
+        </a>
+
+        <!-- Masaüstü Menü -->
+        <nav class="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300">
+          <a href="#hakkimda" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Hakkımda</a>
+          <a href="#projeler" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Projeler</a>
+          <a href="#blog" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">Teknik Blog</a>
+          <a href="#laboratuvar" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors flex items-center gap-1.5">
+            <span>Eğlenceli Köşe</span>
+            <span class="px-1.5 py-0.5 text-[10px] font-mono rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">İnteraktif</span>
+          </a>
+          <a href="#iletisim" class="hover:text-brand-500 dark:hover:text-brand-400 transition-colors">İletişim</a>
+        </nav>
+
+        <!-- Tema Değiştirici & Mobil Menü Butonu -->
+        <div class="flex items-center gap-2">
+          <button id="theme-toggle" aria-label="Temayı Değiştir" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:border-brand-500 transition-all">
+            <!-- Güneş İkonu (Dark modda görünür) -->
+            <svg id="sun-icon" class="w-4 h-4 hidden dark:block text-amber-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="5"></circle>
+              <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+            </svg>
+            <!-- Ay İkonu (Light modda görünür) -->
+            <svg id="moon-icon" class="w-4 h-4 block dark:hidden text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </button>
+
+          <button id="mobile-menu-btn" aria-label="Menüyü Aç" class="md:hidden p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-100/70 dark:bg-slate-900 text-slate-700 dark:text-slate-300">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobil Açılır Menü -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-4 py-4 space-y-2">
+      <a href="#hakkimda" class="mobile-link block px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-900">Hakkımda</a>
+      <a href="#projeler" class="mobile-link block px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-900">Projeler</a>
+      <a href="#blog" class="mobile-link block px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-900">Teknik Blog</a>
+      <a href="#laboratuvar" class="mobile-link block px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-900 text-emerald-500">Eğlenceli Köşe (Quiz & Oyun)</a>
+      <a href="#iletisim" class="mobile-link block px-3 py-2 rounded-lg text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-900">İletişim</a>
+    </div>
+  </header>
+
+  <!-- Hero Bölümü -->
+  <section class="relative pt-14 pb-20 lg:pt-24 lg:pb-28 overflow-hidden">
+    <!-- Arka plan dekoratif ışıklar -->
+    <div class="absolute top-10 left-1/4 w-72 h-72 bg-brand-500/15 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-10 right-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        
+        <!-- Sol Kolon: Tanıtım -->
+        <div class="lg:col-span-7 space-y-6">
+          <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand-500/10 border border-brand-500/20 text-brand-600 dark:text-brand-400 text-xs font-mono font-medium">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            Kurumsal Mimari • Veri Otomasyonu • Eğitici İçerik
+          </div>
+
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-[1.15]">
+            Merhaba, ben <br/>
+            <span class="bg-gradient-to-r from-brand-500 via-sky-400 to-emerald-400 bg-clip-text text-transparent">Mehmet Sabih Ok</span>
+          </h1>
+
+          <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl">
+            Bilgisayar Mühendisi ve Yazılım Geliştirici olarak <strong>C# / .NET Core</strong>, <strong>RESTful API</strong> ve <strong>SQL Server</strong> tabanlı ölçeklenebilir kurumsal sistemler geliştiriyorum. Karmaşık teknik mimarileri sadeleştirmeyi, veri otomasyonu kurmayı ve öğrendiklerimi eğitici içeriklerle paylaşmayı seviyorum.
+          </p>
+
+          <div class="flex flex-wrap items-center gap-3 pt-2">
+            <a href="#blog" class="px-6 py-3 rounded-xl bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm shadow-lg shadow-brand-500/25 transition-all flex items-center gap-2">
+              <span>Teknik Yazıları Oku</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+            </a>
+            <a href="#laboratuvar" class="px-6 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-emerald-500 text-slate-800 dark:text-slate-200 font-semibold text-sm transition-all flex items-center gap-2">
+              <span>🎮 Oyun & Quiz Alanı</span>
+            </a>
+            <a href="https://github.com/msabihok" target="_blank" rel="noopener noreferrer" class="p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 hover:border-brand-500 text-slate-700 dark:text-slate-300 transition-all" title="GitHub Profili">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- Sağ Kolon: İnteraktif Geliştirici Terminali -->
+        <div class="lg:col-span-5">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-900 text-slate-100 shadow-2xl overflow-hidden">
+            <!-- Terminal Üst Çubuk -->
+            <div class="flex items-center justify-between px-4 py-3 bg-slate-800/90 border-b border-slate-700/80">
+              <div class="flex items-center gap-2">
+                <span class="w-3 h-3 rounded-full bg-rose-500"></span>
+                <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+                <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+              </div>
+              <span class="text-xs font-mono text-slate-400">msabihok@itu-dev: ~/portfolio</span>
+              <button onclick="replayTerminal()" class="text-[11px] font-mono text-brand-400 hover:underline">Yeniden Çalıştır</button>
+            </div>
+            <!-- Terminal İçeriği -->
+            <div id="terminal-body" class="p-5 font-mono text-xs sm:text-sm space-y-2.5 min-h-[270px] leading-relaxed">
+              <!-- JS tarafından dinamik doldurulur -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Hakkımda & Teknoloji Yığını -->
+  <section id="hakkimda" class="py-16 border-t border-slate-200/70 dark:border-slate-800/70 bg-white/50 dark:bg-slate-900/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        
+        <!-- Kurumsal Profil Özeti -->
+        <div class="lg:col-span-5 space-y-4">
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+            <span class="w-2 h-7 rounded-full bg-brand-500"></span>
+            Hakkımda
+          </h2>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+            <strong>Bilecik Şeyh Edebali Üniversitesi Bilgisayar Mühendisliği</strong> mezunuyum. Yazılım geliştirme kariyerimde kurumsal ölçekli web uygulamaları, yüksek performanslı arka uç (backend) servisleri ve veri odaklı otomasyon çözümleri üzerine odaklanıyorum.
+          </p>
+          <p class="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+            <strong>İstanbul Teknik Üniversitesi (İTÜ)</strong> bünyesinde kurumsal web mimarilerinin geliştirilmesi, RESTful API entegrasyonları ve veritabanı optimizasyonu süreçlerinde görev alıyorum. Boş zamanlarımda ise Python ile finansal veri analizi botları ve HTML5 Canvas tabanlı tarayıcı oyunları tasarlıyorum.
+          </p>
+
+          <!-- Kısa İstatistik / Deneyim Kartları -->
+          <div class="grid grid-cols-2 gap-3 pt-2">
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div class="text-xs font-mono text-brand-500">Kurum & Pozisyon</div>
+              <div class="font-bold text-sm mt-1 text-slate-900 dark:text-white">İTÜ • Yazılım Geliştirici</div>
+            </div>
+            <div class="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
+              <div class="text-xs font-mono text-emerald-500">Eğitim</div>
+              <div class="font-bold text-sm mt-1 text-slate-900 dark:text-white">Bilgisayar Mühendisliği</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Kategorize Edilmiş Teknoloji Yetkinlikleri -->
+        <div class="lg:col-span-7 space-y-5">
+          <h3 class="text-lg font-bold text-slate-900 dark:text-white">Teknik Yetkinlikler & Araç Kutusu</h3>
+          
+          <div class="space-y-4">
+            <!-- Backend -->
+            <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 shadow-sm">
+              <div class="text-xs font-mono font-semibold uppercase tracking-wider text-brand-500 mb-3">Kurumsal Backend & Mimari</div>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-colors">C#</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-colors">.NET 8 / .NET 9</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-colors">ASP.NET Core MVC & Web API</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-colors">Entity Framework Core</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-colors">LINQ & Repository Pattern</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-brand-500 transition-colors">RESTful Services</span>
+              </div>
+            </div>
+
+            <!-- Veri & Raporlama -->
+            <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 shadow-sm">
+              <div class="text-xs font-mono font-semibold uppercase tracking-wider text-emerald-500 mb-3">Veritabanı, Otomasyon & Raporlama</div>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors">MS SQL Server & T-SQL</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors">QuestPDF</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors">Python & Pandas</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors">yfinance (Finansal Veri)</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition-colors">Telegram Bot API</span>
+              </div>
+            </div>
+
+            <!-- Frontend & DevOps -->
+            <div class="p-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 shadow-sm">
+              <div class="text-xs font-mono font-semibold uppercase tracking-wider text-amber-500 mb-3">Arayüz, Oyun Fiziği & Versiyon Kontrol</div>
+              <div class="flex flex-wrap gap-2">
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-amber-500 transition-colors">HTML5 & Canvas API</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-amber-500 transition-colors">JavaScript (ES6+)</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-amber-500 transition-colors">Bootstrap 5 & Tailwind CSS</span>
+                <span class="px-3 py-1.5 rounded-lg text-xs font-mono font-medium bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 hover:border-amber-500 transition-colors">Git, GitHub & Bitbucket</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Öne Çıkan Projeler -->
+  <section id="projeler" class="py-16 border-t border-slate-200/70 dark:border-slate-800/70">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+            <span class="w-2 h-7 rounded-full bg-emerald-500"></span>
+            Öne Çıkan Projeler & Mimari Çözümler
+          </h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">Kurumsal sistemlerden veri otomasyonuna ve tarayıcı oyunlarına kadar geliştirdiğim seçili çalışmalar.</p>
+        </div>
+        <a href="https://github.com/msabihok" target="_blank" rel="noopener noreferrer" class="text-sm font-mono font-semibold text-brand-500 hover:underline flex items-center gap-1">
+          <span>Tüm GitHub Repoları</span>
+          <span>↗</span>
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Proje 1 -->
+        <article class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col justify-between hover:border-brand-500/60 hover:shadow-xl hover:shadow-brand-500/5 transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-brand-500/10 text-brand-500 flex items-center justify-center font-mono font-bold">
+                .NET
+              </div>
+              <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Kurumsal Mimari</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-brand-500 transition-colors">
+              Kurumsal Web & Dinamik Raporlama Sistemi
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2.5 leading-relaxed">
+              ASP.NET Core MVC/API, Entity Framework Core ve SQL Server kullanılarak geliştirilen; yüksek hacimli verileri filtreleyip <strong>QuestPDF</strong> ile milimetrik kurumsal PDF belgelerine dönüştüren modüler altyapı.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-400">C# / .NET Core</span>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-400">EF Core</span>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-brand-500/10 text-brand-600 dark:text-brand-400">QuestPDF</span>
+          </div>
+        </article>
+
+        <!-- Proje 2 -->
+        <article class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col justify-between hover:border-emerald-500/60 hover:shadow-xl hover:shadow-emerald-500/5 transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center font-mono font-bold">
+                PY
+              </div>
+              <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Veri Otomasyonu</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-emerald-500 transition-colors">
+              BIST Veri Analizi & Telegram Bot Motoru
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2.5 leading-relaxed">
+              Python ve <strong>yfinance</strong> kütüphanesiyle Borsa İstanbul kapanış verilerini otomatik çeken, teknik göstergeleri hesaplayan ve zamanlanmış görevlerle Telegram üzerinden özet rapor sunan otomasyon servisi.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">Python</span>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">yfinance</span>
+            <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">Telegram API</span>
+          </div>
+        </article>
+
+        <!-- Proje 3 -->
+        <article class="group rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col justify-between hover:border-amber-500/60 hover:shadow-xl hover:shadow-amber-500/5 transition-all">
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-mono font-bold">
+                2D
+              </div>
+              <span class="text-xs font-mono px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">Oyun & Fizik</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white group-hover:text-amber-500 transition-colors">
+              Neon Pong & HTML5 Canvas Oyun Motoru
+            </h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2.5 leading-relaxed">
+              Hiçbir harici oyun motoru kullanmadan saf HTML5 Canvas ve JavaScript ile geliştirdiğim; çarpışma fiziği, yapay zeka rakip algoritması ve neon parçacık efektleri barındıran interaktif tarayıcı oyunu.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+            <div class="flex flex-wrap gap-1.5">
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">HTML5 Canvas</span>
+              <span class="text-[11px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 dark:text-amber-400">Vanilla JS</span>
+            </div>
+            <a href="#laboratuvar" class="text-xs font-mono font-semibold text-amber-500 hover:underline">Canlı Dene →</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- Teknik & Eğitici Blog -->
+  <section id="blog" class="py-16 border-t border-slate-200/70 dark:border-slate-800/70 bg-white/50 dark:bg-slate-900/30">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+        <div>
+          <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+            <span class="w-2 h-7 rounded-full bg-brand-500"></span>
+            Teknik & Eğitici Blog
+          </h2>
+          <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">Yazılım mimarisi, veritabanı optimizasyonu, otomasyon ve algoritma notlarım.</p>
+        </div>
+
+        <!-- Kategori Filtre Butonları -->
+        <div id="blog-filters" class="flex flex-wrap gap-2">
+          <button data-category="all" class="filter-btn active px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-brand-600 text-white transition-all">Tümü</button>
+          <button data-category="dotnet" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-500/20 transition-all">.NET & Backend</button>
+          <button data-category="data" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-500/20 transition-all">Veri & Otomasyon</button>
+          <button data-category="web" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-slate-200/70 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-brand-500/20 transition-all">Web & Algoritma</button>
+        </div>
+      </div>
+
+      <!-- Blog Kartları Listesi (JS ile doldurulur) -->
+      <div id="blog-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- Eğlenceli & Eğitici Köşe (İnteraktif Laboratuvar) -->
+  <section id="laboratuvar" class="py-16 border-t border-slate-200/70 dark:border-slate-800/70">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <span class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 mb-3">
+          Etkileşimli Geliştirici Laboratuvarı
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">Eğlenceli & Eğitici Köşe</h2>
+        <p class="text-sm text-slate-600 dark:text-slate-400 mt-2">
+          Kurumsal kodlardan kısa bir mola verin: Bilginizi 3 soruluk mini mühendislik testiyle ölçün veya HTML5 Canvas ile hazırladığım Mini Neon Pong oyununu deneyin.
+        </p>
+      </div>
+
+      <!-- Sekme Seçici -->
+      <div class="flex justify-center gap-3 mb-8">
+        <button id="tab-quiz-btn" onclick="switchLabTab('quiz')" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-600 text-white shadow-md transition-all">
+          🧠 Hızlı Geliştirici Testi (Quiz)
+        </button>
+        <button id="tab-game-btn" onclick="switchLabTab('game')" class="px-5 py-2.5 rounded-xl text-sm font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:border-emerald-500 transition-all">
+          🕹️ Mini Neon Pong Oyna
+        </button>
+      </div>
+
+      <!-- SEKME 1: MİNİ QUIZ -->
+      <div id="lab-quiz-panel" class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 sm:p-8 shadow-lg">
+        <div id="quiz-container">
+          <!-- JS tarafından doldurulacak -->
+        </div>
+      </div>
+
+      <!-- SEKME 2: MİNİ NEON PONG OYUNU -->
+      <div id="lab-game-panel" class="hidden rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-900 p-4 sm:p-6 shadow-2xl text-white">
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-bold text-base sm:text-lg text-brand-400 font-mono">NEON PONG // HTML5 CANVAS</h3>
+            <p class="text-xs text-slate-400">Fareyi hareket ettirin, dokunmatik kaydırın veya Yukarı/Aşağı ok tuşlarını kullanın.</p>
+          </div>
+          <div class="flex items-center gap-4 font-mono text-sm">
+            <span class="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700">Sen: <strong id="player-score" class="text-emerald-400">0</strong></span>
+            <span class="px-3 py-1 rounded-lg bg-slate-800 border border-slate-700">CPU: <strong id="cpu-score" class="text-rose-400">0</strong></span>
+            <button id="pong-start-btn" onclick="startPongGame()" class="px-4 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs transition-colors">
+              Başlat / Sıfırla
+            </button>
+          </div>
+        </div>
+
+        <div id="pong-wrapper" class="relative w-full h-[300px] sm:h-[360px] rounded-xl overflow-hidden border border-slate-700 bg-slate-950">
+          <canvas id="pong-canvas" class="block w-full h-full cursor-none"></canvas>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- İletişim & Footer -->
+  <footer id="iletisim" class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 pt-14 pb-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-slate-200 dark:border-slate-800">
+        
+        <div class="md:col-span-6 space-y-3">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-mono font-bold text-xs">&lt;/&gt;</div>
+            <span class="font-bold text-lg text-slate-900 dark:text-white">Mehmet Sabih Ok</span>
+          </div>
+          <p class="text-sm text-slate-600 dark:text-slate-400 max-w-md leading-relaxed">
+            Kurumsal yazılım mimarileri, API geliştirme, veri otomasyonu veya teknik paylaşımlar üzerine iletişime geçmek için GitHub üzerinden ulaşabilir ya da bağlantıları kopyalayabilirsiniz.
+          </p>
+        </div>
+
+        <div class="md:col-span-6 flex flex-col sm:flex-row md:justify-end items-start sm:items-center gap-3">
+          <a href="https://github.com/msabihok" target="_blank" rel="noopener noreferrer" class="px-5 py-3 rounded-xl bg-slate-900 dark:bg-slate-800 hover:bg-slate-800 dark:hover:bg-slate-700 text-white text-sm font-medium flex items-center gap-2 transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"></path></svg>
+            <span>github.com/msabihok</span>
+          </a>
+
+          <button onclick="copySiteUrl()" class="px-5 py-3 rounded-xl border border-slate-300 dark:border-slate-700 hover:border-brand-500 text-slate-800 dark:text-slate-200 text-sm font-medium flex items-center gap-2 transition-colors">
+            <span>📋 Site Adresini Kopyala</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400 font-mono">
+        <p>© 2026 Mehmet Sabih Ok. Tüm hakları saklıdır.</p>
+        <p>GitHub Pages (msabihok.github.io) için tek dosya olarak tasarlanmıştır.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Blog Okuma Modalı -->
+  <div id="blog-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-950/75 backdrop-blur-sm">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto shadow-2xl p-6 sm:p-8 relative">
+      <button onclick="closeBlogModal()" aria-label="Kapat" class="absolute top-5 right-5 p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-500 transition-colors">
+        ✕
+      </button>
+      <div id="modal-badge" class="inline-block px-3 py-1 rounded-full text-xs font-mono font-semibold bg-brand-500/10 text-brand-500 mb-3"></div>
+      <h3 id="modal-title" class="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white pr-8"></h3>
+      <div id="modal-meta" class="text-xs font-mono text-slate-500 dark:text-slate-400 mt-2 pb-4 border-b border-slate-200 dark:border-slate-800"></div>
+      <div id="modal-content" class="mt-5 space-y-4 text-sm sm:text-base text-slate-700 dark:text-slate-300 leading-relaxed"></div>
+    </div>
+  </div>
+
+  <!-- Uygulama Mantığı (JavaScript) -->
+  <script>
+    // 1. TEMA YÖNETİMİ (DARK / LIGHT MODE)
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    themeToggleBtn.addEventListener('click', () => {
+      htmlElement.classList.toggle('dark');
+      const isDark = htmlElement.classList.contains('dark');
+      localStorage.setItem('msabihok-theme', isDark ? 'dark' : 'light');
+      showToast(isDark ? 'Karanlık (Geliştirici) teması aktif.' : 'Aydınlık tema aktif.');
+    });
+
+    // Kayıtlı temayı yükle
+    if (localStorage.getItem('msabihok-theme') === 'light') {
+      htmlElement.classList.remove('dark');
+    }
+
+    // Mobil Menü Kontrolü
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    mobileMenuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+    document.querySelectorAll('.mobile-link').forEach(link => {
+      link.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    });
+
+    // Özel Toast Bildirim Fonksiyonu
+    function showToast(message) {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = 'px-4 py-2.5 rounded-xl bg-slate-900 dark:bg-slate-800 text-white text-xs font-mono border border-slate-700 shadow-xl transition-all duration-300 transform translate-y-2 opacity-0';
+      toast.textContent = message;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    // Panoya Kopyalama (execCommand uyumlu)
+    function copySiteUrl() {
+      const tempInput = document.createElement('input');
+      tempInput.value = 'https://msabihok.github.io/';
+      document.body.appendChild(tempInput);
+      tempInput.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempInput);
+      showToast('https://msabihok.github.io/ panoya kopyalandı!');
+    }
+
+    // 2. İNTERAKTİF TERMİNAL SİMÜLASYONU
+    const terminalLines = [
+      { prompt: true, text: 'dotnet run --project Msabihok.Portfolio' },
+      { prompt: false, text: '<span class="text-emerald-400">✔</span> Kimlik doğrulandı: <strong>Mehmet Sabih Ok</strong>' },
+      { prompt: false, text: '<span class="text-sky-400">ℹ</span> Unvan: Bilgisayar Mühendisi & Yazılım Geliştirici' },
+      { prompt: false, text: '<span class="text-sky-400">ℹ</span> Kurum: İstanbul Teknik Üniversitesi (İTÜ)' },
+      { prompt: false, text: '<span class="text-amber-400">⚙</span> Yığın: C# | .NET 8/9 | SQL Server | Python | JS' },
+      { prompt: false, text: '<span class="text-emerald-400">✔</span> Durum: Kurumsal mimari & eğitici içerik yayında.' }
+    ];
+
+    let terminalTimeouts = [];
+    function replayTerminal() {
+      terminalTimeouts.forEach(t => clearTimeout(t));
+      terminalTimeouts = [];
+      const body = document.getElementById('terminal-body');
+      body.innerHTML = '';
+
+      terminalLines.forEach((line, index) => {
+        const timeout = setTimeout(() => {
+          const div = document.createElement('div');
+          if (line.prompt) {
+            div.innerHTML = `<span class="text-emerald-400">❯</span> <span class="text-slate-100">${line.text}</span>`;
+          } else {
+            div.innerHTML = line.text;
+          }
+          body.appendChild(div);
+
+          if (index === terminalLines.length - 1) {
+            const cursorLine = document.createElement('div');
+            cursorLine.className = 'pt-1';
+            cursorLine.innerHTML = `<span class="text-emerald-400">❯</span> <span class="terminal-cursor"></span>`;
+            body.appendChild(cursorLine);
+          }
+        }, index * 450);
+        terminalTimeouts.push(timeout);
+      });
+    }
+
+    // 3. TEKNİK & EĞİTİCİ BLOG VERİLERİ VE FİLTRELEME
+    const blogPosts = [
+      {
+        id: 1,
+        category: 'dotnet',
+        categoryLabel: '.NET & Backend',
+        readTime: '4 dk okuma',
+        date: 'Kasım 2026',
+        title: '.NET 8/9 ile Kurumsal API Mimarisinde Performans ve Temiz Kod İpuçları',
+        summary: 'Entity Framework Core sorgularında AsNoTracking kullanımı, DTO katmanı izolasyonu ve ölçeklenebilir katmanlı mimari pratikleri.',
+        content: `
+          <p>Kurumsal ölçekli <strong>ASP.NET Core Web API</strong> projelerinde uygulamanın sürdürülebilirliği kadar veritabanı sorgu performansı da kritik öneme sahiptir.</p>
+          <h4 class="font-bold text-slate-900 dark:text-white mt-3">1. Salt Okunur Sorgularda AsNoTracking() Kullanın</h4>
+          <p>Listeleme ve raporlama ekranlarında Entity Framework Core'un değişiklik izleme (Change Tracker) mekanizmasına ihtiyacınız yoktur. Sorgularınıza <code>.AsNoTracking()</code> ekleyerek bellek tüketimini ciddi oranda düşürebilirsiniz.</p>
+          <pre class="p-3 rounded-xl bg-slate-950 text-emerald-400 font-mono text-xs overflow-x-auto my-2">var users = await _context.Users
+    .AsNoTracking()
+    .Where(u => u.IsActive)
+    .Select(u => new UserSummaryDto(u.Id, u.FullName))
+    .ToListAsync();</pre>
+          <h4 class="font-bold text-slate-900 dark:text-white mt-3">2. Veritabanı Varlıklarını Doğrudan Dışarı Açmayın</h4>
+          <p>Entity sınıflarınızı doğrudan API yanıtı olarak döndürmek hem güvenlik riski oluşturur hem de gereksiz kolonların ağ üzerinden taşınmasına yol açar. Her zaman amaca yönelik <strong>Record / DTO</strong> modelleri kullanın.</p>
+        `
+      },
+      {
+        id: 2,
+        category: 'dotnet',
+        categoryLabel: '.NET & Backend',
+        readTime: '5 dk okuma',
+        date: 'Ekim 2026',
+        title: 'C# ve QuestPDF Kullanarak Dinamik Kurumsal PDF Raporları Üretmek',
+        summary: 'Eski tip HTML-to-PDF araçları yerine modern Fluent API yaklaşımıyla hızlı, ölçeklenebilir ve piksel hassasiyetinde PDF belgeleri tasarlama.',
+        content: `
+          <p>Kurumsal web uygulamalarında resmi yazışmalar, bordrolar ve tablo bazlı analiz raporları üretmek sık karşılaşılan bir ihtiyaçtır. <strong>QuestPDF</strong>, C# kodu ile doğrudan belge ağacı oluşturmamızı sağlar.</p>
+          <h4 class="font-bold text-slate-900 dark:text-white mt-3">Neden QuestPDF?</h4>
+          <ul class="list-disc pl-5 space-y-1">
+            <li>Harici tarayıcı motorlarına (wkhtmltopdf vb.) bağımlılık gerektirmez.</li>
+            <li>Sayfa taşmalarını (Pagination) ve üst/alt bilgi tekrarlarını otomatik yönetir.</li>
+            <li>Fluent API sözdizimi sayesinde okunabilirliği çok yüksektir.</li>
+          </ul>
+          <pre class="p-3 rounded-xl bg-slate-950 text-sky-400 font-mono text-xs overflow-x-auto my-2">Document.Create(container => {
+    container.Page(page => {
+        page.Margin(30);
+        page.Header().Text("Kurumsal Faaliyet Raporu").Bold().FontSize(16);
+        page.Content().Text("Veriler SQL Server üzerinden dinamik çekilmiştir.");
+    });
+}).GeneratePdf("rapor.pdf");</pre>
+        `
+      },
+      {
+        id: 3,
+        category: 'data',
+        categoryLabel: 'Veri & Otomasyon',
+        readTime: '4 dk okuma',
+        date: 'Eylül 2026',
+        title: 'Python ile Finansal Veri Otomasyonu ve Telegram Bot Entegrasyonu',
+        summary: 'yfinance kütüphanesi ile BIST hisse kapanış verilerini analiz etme ve belirli koşullarda anlık bildirim gönderen otonom bot mimarisi.',
+        content: `
+          <p>Tekrarlayan veri kontrol süreçlerini otomatize etmek mühendisliğin en keyifli yanlarından biridir. Python ekosistemi bu konuda son derece zengin araçlar sunar.</p>
+          <h4 class="font-bold text-slate-900 dark:text-white mt-3">Çalışma Mantığı</h4>
+          <p>Sistem üç temel adımdan oluşur: <strong>Veri Toplama</strong>, <strong>Filtreleme/Analiz</strong> ve <strong>Bildirim İletimi</strong>. Borsa kapanış saatinden sonra tetiklenen bir zamanlanmış görev (Cron Job), belirlenen sembollerin hacim ve fiyat değişimlerini hesaplar.</p>
+          <pre class="p-3 rounded-xl bg-slate-950 text-amber-400 font-mono text-xs overflow-x-auto my-2">import yfinance as yf
+
+data = yf.download("THYAO.IS", period="5d", interval="1d")
+son_kapanis = data['Close'].iloc[-1]
+print(f"Son Kapanış: {son_kapanis:.2f} TL")</pre>
+          <p>Hesaplanan özet metin, Telegram Bot API <code>sendMessage</code> uç noktasına POST isteği atılarak saniyeler içinde cep telefonuna ulaştırılır.</p>
+        `
+      },
+      {
+        id: 4,
+        category: 'web',
+        categoryLabel: 'Web & Algoritma',
+        readTime: '6 dk okuma',
+        date: 'Ağustos 2026',
+        title: 'HTML5 Canvas ile Sıfırdan Oyun Döngüsü (Game Loop) Mantığı',
+        summary: 'Tarayıcı tabanlı 2D oyunlarda requestAnimationFrame, delta-time kavramı ve dikdörtgen-daire çarpışma fiziğinin temelleri.',
+        content: `
+          <p>Bir oyunu sıradan bir web sayfasından ayıran en temel yapı <strong>Game Loop (Oyun Döngüsü)</strong> mekanizmasıdır. Saniyede 60 kare (60 FPS) akıcılık sağlamak için <code>setInterval</code> yerine tarayıcının ekran yenileme hızıyla senkronize çalışan <code>requestAnimationFrame</code> kullanılır.</p>
+          <h4 class="font-bold text-slate-900 dark:text-white mt-3">Temel 3 Adım: Update & Render</h4>
+          <ol class="list-decimal pl-5 space-y-1">
+            <li><strong>Girdi Okuma:</strong> Klavye, fare veya dokunmatik koordinatlarını yakala.</li>
+            <li><strong>Fizik Güncelleme (Update):</strong> Topun konumunu hız vektörüne göre ilerlet ve çarpışmaları kontrol et.</li>
+            <li><strong>Çizim (Render):</strong> Tuvali temizle ve güncel koordinatları ekrana çiz.</li>
+          </ol>
+          <p>Bu sayfadaki <em>Eğlenceli Köşe</em> bölümünde çalışan Neon Pong oyunu tam olarak bu saf mimari üzerine inşa edilmiştir.</p>
+        `
+      }
+    ];
+
+    function renderBlogPosts(filter = 'all') {
+      const grid = document.getElementById('blog-grid');
+      grid.innerHTML = '';
+
+      const filtered = filter === 'all' ? blogPosts : blogPosts.filter(p => p.category === filter);
+
+      filtered.forEach(post => {
+        const card = document.createElement('article');
+        card.className = 'rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 flex flex-col justify-between hover:border-brand-500/50 transition-all shadow-sm';
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400 mb-3">
+              <span class="px-2.5 py-1 rounded-lg bg-brand-500/10 text-brand-600 dark:text-brand-400 font-semibold">${post.categoryLabel}</span>
+              <span>${post.date} • ${post.readTime}</span>
+            </div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white leading-snug">${post.title}</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-2.5 leading-relaxed">${post.summary}</p>
+          </div>
+          <div class="mt-5 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <button onclick="openBlogModal(${post.id})" class="text-sm font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1.5">
+              <span>Devamını Oku</span>
+              <span>→</span>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Kategori filtre butonları
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => {
+          b.classList.remove('bg-brand-600', 'text-white');
+          b.classList.add('bg-slate-200/70', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+        });
+        btn.classList.remove('bg-slate-200/70', 'dark:bg-slate-800', 'text-slate-700', 'dark:text-slate-300');
+        btn.classList.add('bg-brand-600', 'text-white');
+        renderBlogPosts(btn.dataset.category);
+      });
+    });
+
+    function openBlogModal(id) {
+      const post = blogPosts.find(p => p.id === id);
+      if (!post) return;
+      document.getElementById('modal-badge').textContent = post.categoryLabel;
+      document.getElementById('modal-title').textContent = post.title;
+      document.getElementById('modal-meta').textContent = `Yazar: Mehmet Sabih Ok • ${post.date} • ${post.readTime}`;
+      document.getElementById('modal-content').innerHTML = post.content;
+      const modal = document.getElementById('blog-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeBlogModal() {
+      const modal = document.getElementById('blog-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    // 4. EĞLENCELİ KÖŞE: MİNİ QUIZ & NEON PONG OYUNU
+    const quizData = [
+      {
+        q: '1) Entity Framework Core üzerinde yalnızca okuma (listeleme) yapılacak bir sorguda bellek performansını artırmak için hangi metot kullanılır?',
+        options: ['AsNoTracking()', 'SaveChangesAsync()', 'EnsureDeleted()', 'IgnoreAutoIncludes()'],
+        answer: 0,
+        explanation: 'Doğru! AsNoTracking(), EF Core Change Tracker mekanizmasını devre dışı bırakarak salt okunur sorgularda hız ve bellek tasarrufu sağlar.'
+      },
+      {
+        q: '2) SQL Server üzerinde milyonlarca satırlık bir tabloda WHERE koşulunda sık kullanılan bir kolonu hızlandırmak için ilk başvurulacak yapı nedir?',
+        options: ['Trigger', 'Non-Clustered Index', 'Cursor', 'Temp Table'],
+        answer: 1,
+        explanation: 'Harika! Doğru tasarlanmış bir Non-Clustered Index, tam tablo taraması (Table Scan) yerine doğrudan ilgili veri sayfalarına erişim sağlar.'
+      },
+      {
+        q: '3) Tarayıcı tabanlı HTML5 Canvas oyunlarında ekran yenileme hızıyla uyumlu akıcı döngü kurmak için hangi API tercih edilir?',
+        options: ['setTimeout()', 'requestAnimationFrame()', 'localStorage.setItem()', 'fetch()'],
+        answer: 1,
+        explanation: 'Kesinlikle! requestAnimationFrame(), monitörün yenileme hızına (genellikle 60Hz/120Hz) senkronize çalışarak takılmaları önler.'
+      }
+    ];
+
+    let currentQuizIndex = 0;
+    let quizScore = 0;
+
+    function renderQuiz() {
+      const container = document.getElementById('quiz-container');
+      if (currentQuizIndex >= quizData.length) {
+        container.innerHTML = `
+          <div class="text-center py-6 space-y-4">
+            <div class="text-4xl">🏆</div>
+            <h3 class="text-xl font-bold text-slate-900 dark:text-white">Test Tamamlandı! Skorun: ${quizScore} / ${quizData.length}</h3>
+            <p class="text-sm text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+              ${quizScore === 3 ? 'Mükemmel! Kurumsal mimari ve web teknolojilerine tamamen hakimsin.' : 'Güzel deneme! Teknik blog yazılarına göz atarak tüm sorulara tam puan verebilirsin.'}
+            </p>
+            <button onclick="resetQuiz()" class="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-semibold transition-colors">
+              Testi Tekrar Çöz
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const item = quizData[currentQuizIndex];
+      container.innerHTML = `
+        <div class="space-y-4">
+          <div class="flex items-center justify-between text-xs font-mono text-slate-500">
+            <span>Soru ${currentQuizIndex + 1} / ${quizData.length}</span>
+            <span>Skor: ${quizScore}</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white">${item.q}</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+            ${item.options.map((opt, idx) => `
+              <button onclick="answerQuiz(${idx})" class="quiz-opt text-left p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-brand-500 bg-slate-50 dark:bg-slate-800/60 text-sm font-mono transition-all">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <div id="quiz-feedback" class="hidden p-3.5 rounded-xl text-xs sm:text-sm font-medium"></div>
+        </div>
+      `;
+    }
+
+    function answerQuiz(selectedIdx) {
+      const item = quizData[currentQuizIndex];
+      const feedback = document.getElementById('quiz-feedback');
+      const buttons = document.querySelectorAll('.quiz-opt');
+      buttons.forEach(b => b.disabled = true);
+
+      feedback.classList.remove('hidden');
+      if (selectedIdx === item.answer) {
+        quizScore++;
+        buttons[selectedIdx].classList.add('border-emerald-500', 'bg-emerald-500/15', 'text-emerald-600', 'dark:text-emerald-300');
+        feedback.className = 'p-3.5 rounded-xl text-xs sm:text-sm font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20';
+        feedback.textContent = item.explanation;
+      } else {
+        buttons[selectedIdx].classList.add('border-rose-500', 'bg-rose-500/15');
+        buttons[item.answer].classList.add('border-emerald-500', 'bg-emerald-500/15');
+        feedback.className = 'p-3.5 rounded-xl text-xs sm:text-sm font-medium bg-rose-500/10 text-rose-700 dark:text-rose-300 border border-rose-500/20';
+        feedback.textContent = 'Yanlış cevap. ' + item.explanation;
+      }
+
+      setTimeout(() => {
+        currentQuizIndex++;
+        renderQuiz();
+      }, 2100);
+    }
+
+    function resetQuiz() {
+      currentQuizIndex = 0;
+      quizScore = 0;
+      renderQuiz();
+    }
+
+    // SEKME GEÇİŞİ
+    function switchLabTab(tab) {
+      const quizPanel = document.getElementById('lab-quiz-panel');
+      const gamePanel = document.getElementById('lab-game-panel');
+      const quizBtn = document.getElementById('tab-quiz-btn');
+      const gameBtn = document.getElementById('tab-game-btn');
+
+      if (tab === 'quiz') {
+        quizPanel.classList.remove('hidden');
+        gamePanel.classList.add('hidden');
+        quizBtn.className = 'px-5 py-2.5 rounded-xl text-sm font-semibold bg-brand-600 text-white shadow-md transition-all';
+        gameBtn.className = 'px-5 py-2.5 rounded-xl text-sm font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all';
+        pongRunning = false;
+      } else {
+        quizPanel.classList.add('hidden');
+        gamePanel.classList.remove('hidden');
+        gameBtn.className = 'px-5 py-2.5 rounded-xl text-sm font-semibold bg-emerald-600 text-white shadow-md transition-all';
+        quizBtn.className = 'px-5 py-2.5 rounded-xl text-sm font-semibold bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 transition-all';
+        resizePongCanvas();
+        drawPongIdle();
+      }
+    }
+
+    // MİNİ NEON PONG (HTML5 CANVAS)
+    const canvas = document.getElementById('pong-canvas');
+    const ctx = canvas.getContext('2d');
+    let pongRunning = false;
+    let pongAnimId = null;
+
+    const game = {
+      playerY: 120,
+      cpuY: 120,
+      paddleH: 76,
+      paddleW: 10,
+      ballX: 300,
+      ballY: 150,
+      ballR: 7,
+      ballVX: 4.5,
+      ballVY: 3.2,
+      playerScore: 0,
+      cpuScore: 0
+    };
+
+    function resizePongCanvas() {
+      const wrapper = document.getElementById('pong-wrapper');
+      if (!wrapper) return;
+      canvas.width = wrapper.clientWidth;
+      canvas.height = wrapper.clientHeight;
+      game.playerY = Math.min(game.playerY, canvas.height - game.paddleH);
+      game.cpuY = Math.min(game.cpuY, canvas.height - game.paddleH);
+    }
+
+    window.addEventListener('resize', () => {
+      if (!document.getElementById('lab-game-panel').classList.contains('hidden')) {
+        resizePongCanvas();
+        if (!pongRunning) drawPongIdle();
+      }
+    });
+
+    function resetBall(direction = 1) {
+      game.ballX = canvas.width / 2;
+      game.ballY = canvas.height / 2;
+      game.ballVX = 4.5 * direction;
+      game.ballVY = (Math.random() > 0.5 ? 1 : -1) * 3.2;
+    }
+
+    function startPongGame() {
+      resizePongCanvas();
+      game.playerScore = 0;
+      game.cpuScore = 0;
+      document.getElementById('player-score').textContent = '0';
+      document.getElementById('cpu-score').textContent = '0';
+      resetBall(1);
+      if (!pongRunning) {
+        pongRunning = true;
+        pongLoop();
+      }
+    }
+
+    function drawPongIdle() {
+      ctx.fillStyle = '#090E1A';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#38BDF8';
+      ctx.font = '600 15px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Oyunu başlatmak için "Başlat / Sıfırla" butonuna tıklayın', canvas.width / 2, canvas.height / 2);
+    }
+
+    function pongLoop() {
+      if (!pongRunning) return;
+
+      // Arka plan
+      ctx.fillStyle = '#090E1A';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Orta kesikli çizgi
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.2)';
+      ctx.setLineDash([8, 8]);
+      ctx.beginPath();
+      ctx.moveTo(canvas.width / 2, 0);
+      ctx.lineTo(canvas.width / 2, canvas.height);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Top hareketi
+      game.ballX += game.ballVX;
+      game.ballY += game.ballVY;
+
+      // Üst-alt duvar sekmesi
+      if (game.ballY - game.ballR <= 0 || game.ballY + game.ballR >= canvas.height) {
+        game.ballVY *= -1;
+      }
+
+      // Basit CPU Yapay Zekası
+      const cpuCenter = game.cpuY + game.paddleH / 2;
+      if (cpuCenter < game.ballY - 12) game.cpuY += 3.6;
+      else if (cpuCenter > game.ballY + 12) game.cpuY -= 3.6;
+      game.cpuY = Math.max(0, Math.min(canvas.height - game.paddleH, game.cpuY));
+
+      // Oyuncu raketi çarpışması (Sol)
+      if (
+        game.ballX - game.ballR <= 24 &&
+        game.ballY >= game.playerY &&
+        game.ballY <= game.playerY + game.paddleH
+      ) {
+        game.ballVX = Math.abs(game.ballVX) * 1.04;
+        const deltaY = game.ballY - (game.playerY + game.paddleH / 2);
+        game.ballVY = deltaY * 0.14;
+      }
+
+      // CPU raketi çarpışması (Sağ)
+      if (
+        game.ballX + game.ballR >= canvas.width - 24 &&
+        game.ballY >= game.cpuY &&
+        game.ballY <= game.cpuY + game.paddleH
+      ) {
+        game.ballVX = -Math.abs(game.ballVX) * 1.03;
+      }
+
+      // Skor kontrolü
+      if (game.ballX < 0) {
+        game.cpuScore++;
+        document.getElementById('cpu-score').textContent = game.cpuScore;
+        resetBall(1);
+      } else if (game.ballX > canvas.width) {
+        game.playerScore++;
+        document.getElementById('player-score').textContent = game.playerScore;
+        resetBall(-1);
+      }
+
+      // Oyuncu Raketi (Neon Yeşil)
+      ctx.fillStyle = '#10B981';
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = '#10B981';
+      ctx.fillRect(14, game.playerY, game.paddleW, game.paddleH);
+
+      // CPU Raketi (Neon Mavi)
+      ctx.fillStyle = '#38BDF8';
+      ctx.shadowColor = '#38BDF8';
+      ctx.fillRect(canvas.width - 24, game.cpuY, game.paddleW, game.paddleH);
+
+      // Top (Beyaz/Neon)
+      ctx.fillStyle = '#F8FAFC';
+      ctx.shadowColor = '#38BDF8';
+      ctx.beginPath();
+      ctx.arc(game.ballX, game.ballY, game.ballR, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.shadowBlur = 0;
+
+      pongAnimId = requestAnimationFrame(pongLoop);
+    }
+
+    // Fare & Dokunmatik & Klavye Kontrolleri
+    canvas.addEventListener('mousemove', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mouseY = e.clientY - rect.top;
+      game.playerY = Math.max(0, Math.min(canvas.height - game.paddleH, mouseY - game.paddleH / 2));
+    });
+
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const touchY = e.touches[0].clientY - rect.top;
+      game.playerY = Math.max(0, Math.min(canvas.height - game.paddleH, touchY - game.paddleH / 2));
+    }, { passive: false });
+
+    window.addEventListener('keydown', (e) => {
+      if (!pongRunning) return;
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        game.playerY = Math.max(0, game.playerY - 28);
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        game.playerY = Math.min(canvas.height - game.paddleH, game.playerY + 28);
+      }
+    });
+
+    // Sayfa Yüklendiğinde Başlat
+    window.onload = function () {
+      replayTerminal();
+      renderBlogPosts('all');
+      renderQuiz();
+    };
+  </script>
+</body>
+</html>
